@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Le Quizz</title>
+      <link rel="stylesheet" type="text/css" href="css/bulma.css">
+      <link rel="stylesheet" type="text/css" href="css/custom.css">
+      <script src="./node_modules/axios/dist/axios.min.js"></script>
+   </head>
+   <body>
+      <!-- TITRE -->
+      <div>
+         <h1 class="has-fixed-size is-centered columns mt-4 mb-6" id="title">Le QUIZZ</h1>
+      </div>
+      <!-- ZONE DE JEU -->
+      <div  class="columns is-centered mx-5 mt-6">
+         <div class="column is-half has-text-centered game-box" style="background-color: transparent;">
+            <!-- MODULES DE JEU EXEMPLES -->
+
+            
+            <div id="gamestarted">
+               <p class="is-size-2 inside-game-box" id="questionGameNumber">Question N°<span id="questionNumber">1</span>/<span id="questionNumberMax">20</span></p>
+               <p class="inside-game-box" id="questionGame">Quel est le prénom du frère de Mario ?</p>
+               <div class="choose-question mt-6 px-6">
+                  <div class="choose-question-box columns has-text-centered is-centered is-size-4">
+                     <input  type="radio" id="responseA" name="SelectQuestion" value="responseA">
+                     <label class="column is-half is-align-items-center" id="labelA" for="responseA">Mario</label><br>
+                     <input type="radio" id="responseB" name="SelectQuestion" value="responseB">
+                     <label class="column is-half is-align-items-center" id="labelB" for="responseB">Luigi</label><br>
+                  </div>
+                  <div class="choose-question-box columns has-text-centered is-centered is-size-4">
+                     <input type="radio" id="responseC" name="SelectQuestion" value="responseC">
+                     <label class="column is-half is-align-items-center" id="labelC" for="responseC">WaLuigi</label><br>
+                     <input type="radio" id="responseD" name="SelectQuestion" value="responseD">
+                     <label class="column is-half is-align-items-center" id="labelD" for="responseD">Michelle fdsdfs f sdf dsfsdf dsf sdf Obama</label><br>
+                  </div>
+                  <div class="confirm-button is-size-3 mb-3">
+                     <p id="valider" onclick="validateQuestion()">Valider</p>
+                  </div>
+               </div>
+            </div>
+         
+            <div id="gamenotstarted" class="">
+
+              <div class="choose-question-box is-size-2 my-3 is-align-content-center column ">
+                <div class="choose-question">
+                  <p id="startbutton" onclick="startGame()" class="is-align-items-center">Commencer</p>
+                </div>
+                
+             </div>
+
+            </div>
+         
+         
+         
+         
+          </div>
+      </div>
+      <!-- LIENS & INFOS -->
+      <footer class="mt-6 custom-footer is-size-4 ">
+         <div class="columns is-centered has-text-centered">
+            <h6 class="mr-1">Twitter</h6>
+            <h6 class="ml-1">Github</h6>
+         </div>
+         <div class=" my-3 columns is-centered has-text-centered">
+            <h6 class="">Clet.V</h6>
+         </div>
+      </footer>
+      <script>
+
+const gameStarted = document.getElementById("gamestarted");
+const geameNotStarted = document.getElementById("gamenotstarted");
+const startButton = document.getElementById("startbutton");
+
+//Element DOM Question actuel
+const questionNumber = document.getElementById("questionNumber");
+//Element DOM Questions Maximum
+const questionNumberMax = document.getElementById("questionNumberMax")
+
+
+const questionGame = document.getElementById("questionGame");
+const questionGameNumber = document.getElementById("questionGameNumber");
+const responseA = document.getElementById("labelA");
+const responseB = document.getElementById("labelB");
+const responseC = document.getElementById("labelC");
+const responseD = document.getElementById("labelD");
+
+let arrayQuestions = [];
+//Tableau des questions
+
+
+var maxQuestions;
+//Nombres max de questions
+
+var actualQuestion;
+
+var questionAnswer;
+//Réponse à la question actuelle
+
+var actualQuestion = 1;
+//Numéro de la question actuelle
+
+function startGame(){
+   console.log("Démarrage de la partie");
+
+
+//envoi d'une requête pour récupérer les questions du quizz et commencer le jeu
+axios.get('http://127.0.0.1:3000/quizz', {
+
+
+   //WIP (ajout de sélection de thèmes de questions)
+	/*params: {
+		theme: 'test',
+	}*/
+
+
+})
+.then(function (response) {
+	console.log(response.data);
+   //console.log(typeof response.data)
+   //Récupération des questions et possibles réponses
+
+   //let responseJSON = JSON.stringify(response.data);
+
+   //console.log(responseJSON);
+
+   
+   
+//Conversion des données des questions en tableau
+   arrayQuestions = Object.values(response.data);
+
+//Désactivation du menu de démarrage & activation du menu de questions
+gameStarted.style.display = "initial";
+geameNotStarted.style.display = "none";
+
+
+maxQuestions = arrayQuestions.length;
+
+
+
+//PREMIERE QUESTION
+console.log (arrayQuestions[0]);
+console.log(typeof arrayQuestions[0]);
+
+//Mise à jour du DOM pour le nombre max de questions
+
+
+
+questionAnswer = (arrayQuestions[0]["answer"]);
+
+
+//Appel fonction permettant d'écrire la question actuelle sur l'interface web
+writeQuestion();
+
+})
+
+}
+
+
+function writeQuestion(){
+
+
+   //affichages des différentes données sur l'interface web
+   questionNumber.innerHTML = actualQuestion;
+   questionNumberMax.innerHTML = maxQuestions;
+   questionAnswer = (arrayQuestions[actualQuestion-1]["answer"]);
+   questionGame.innerHTML = arrayQuestions[actualQuestion-1]["question"];
+   responseA.innerHTML = arrayQuestions[actualQuestion-1]["responseA"];
+   responseB.innerHTML = arrayQuestions[actualQuestion-1]["responseB"];
+   responseC.innerHTML = arrayQuestions[actualQuestion-1]["responseC"];
+   responseD.innerHTML = arrayQuestions[actualQuestion-1]["responseD"];
+   
+
+
+}
+
+
+
+function validateQuestion(){
+   console.log("Réponse de la question " + questionAnswer);
+   
+
+//détection si une des réponses est sélectionnée
+   if(document.querySelector('input[name="SelectQuestion"]:checked') != null){
+      var selected = document.querySelector('input[name="SelectQuestion"]:checked').id;
+   }
+   console.log("Réponse sélectionnée " + selected);
+   console.log(selected)
+
+
+      if (selected == questionAnswer){
+      console.log("Réponse Correcte")
+   }
+   else{
+      console.log("Réponse Incorrecte");
+   }
+   
+actualQuestion++;
+//valeur de la question actuelle incrémentée
+writeQuestion();
+//appel de la fonction écrivant la question sur l'interface web
+}
+
+
+      </script>
+   </body>
+</html>
