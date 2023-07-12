@@ -18,7 +18,7 @@ app.use(cors({
 
 app.use(function (req, res, next) {
 
-res.header('Access-Control-Allow-Origin', "http://127.0.0.1:5500");
+res.header('Access-Control-Allow-Origin', "http://127.0.0.1");
 res.header('Access-Control-Allow-Headers', true);
 res.header('Access-Control-Allow-Credentials', true);
 res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
